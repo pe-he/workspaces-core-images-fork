@@ -31,7 +31,7 @@ elif [[ "${DISTRO}" == @(fedora37|fedora38|fedora39|fedora40) ]]; then
     echo "Generating Locale for ${LOCALE}"
     localedef -i ${LOCALE} -f UTF-8 ${LOCALE}.UTF-8
   done
-elif [[ "${DISTRO}" == @(oracle8|oracle9|rockylinux9|rockylinux8|almalinux9|almalinux8) ]]; then
+elif [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|rockylinux9|rockylinux8|almalinux9|almalinux8) ]]; then
   dnf install -y \
     glibc-locale-source \
     google-noto-emoji-fonts \

@@ -21,12 +21,12 @@ if  $(grep -q Jammy /etc/os-release) || $(grep -q Kali /etc/os-release) || $(gre
   wget ${LIBSSLURL} -O libssl1.1.${ARCH}.deb
   dpkg -i libssl1.1.${ARCH}.deb
   rm -f libssl1.1.${ARCH}.deb
-elif [[ "${DISTRO}" != @(centos|oracle7|oracle8|oracle9|opensuse|fedora37|fedora38|fedora39|fedora40|rockylinux9|rockylinux8|almalinux9|almalinux8|alpine) ]] ; then
+elif [[ "${DISTRO}" != @(centos|oracle7|oracle8|oracle9|rhel9|opensuse|fedora37|fedora38|fedora39|fedora40|rockylinux9|rockylinux8|almalinux9|almalinux8|alpine) ]] ; then
   wget -qO- https://kasmweb-build-artifacts.s3.amazonaws.com/kasm-squid-builder/${SQUID_COMMIT}/output/kasm-squid-builder_${ARCH}.tar.gz | tar -xzf - -C /
 fi
 
 # update squid conf with user info
-if [[ "${DISTRO}" == @(centos|oracle7|oracle8|oracle9|fedora37|fedora38|fedora39|fedora40|almalinux8|almalinux9|rockylinux8|rockylinux9|alpine) ]]; then
+if [[ "${DISTRO}" == @(centos|oracle7|oracle8|oracle9|rhel9|fedora37|fedora38|fedora39|fedora40|almalinux8|almalinux9|rockylinux8|rockylinux9|alpine) ]]; then
   useradd --system --shell /usr/sbin/nologin --home-dir /bin proxy
 elif [ "${DISTRO}" == "opensuse" ]; then
   useradd --system --shell /usr/sbin/nologin --home-dir /bin proxy
@@ -49,7 +49,7 @@ elif [[ "${DISTRO}" == "fedora40" ]]; then
   rpm -i \
     /tmp/libssl.rpm
   rm -f /etc/X11/xinit/xinitrc
-elif [[ "${DISTRO}" == @(rockylinux9|oracle9|almalinux9) ]]; then
+elif [[ "${DISTRO}" == @(rockylinux9|oracle9|rhel9|almalinux9) ]]; then
   dnf install -y compat-openssl11 xkbcomp
   rm -f /etc/X11/xinit/xinitrc
 elif [[ "${DISTRO}" == @(centos|oracle7) ]]; then
@@ -82,7 +82,7 @@ chown -R proxy:proxy /etc/squid/blocked.acl
 
 if [[ "${DISTRO}" == @(centos|oracle7) ]]; then
   yum install -y memcached cyrus-sasl iproute
-elif [[ "${DISTRO}" == @(oracle8|fedora37|fedora38|fedora39|fedora40|oracle9|rockylinux9|rockylinux8|almalinux9|almalinux8) ]]; then
+elif [[ "${DISTRO}" == @(oracle8|fedora37|fedora38|fedora39|fedora40|oracle9|rhel9|rockylinux9|rockylinux8|almalinux9|almalinux8) ]]; then
   dnf install -y memcached cyrus-sasl iproute
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn memcached cyrus-sasl iproute2 libatomic1
@@ -121,7 +121,7 @@ chmod +x /etc/squid/kasm_squid_adapter
 # Install Cert utilities
 if [[ "${DISTRO}" == @(centos|oracle7) ]]; then
   yum install -y nss-tools
-elif [[ "${DISTRO}" == @(oracle8|fedora37|fedora38|fedora39|fedora40|oracle9|rockylinux9|rockylinux8|almalinux9|almalinux8) ]]; then
+elif [[ "${DISTRO}" == @(oracle8|fedora37|fedora38|fedora39|fedora40|oracle9|rhel9|rockylinux9|rockylinux8|almalinux9|almalinux8) ]]; then
   dnf install -y nss-tools
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn mozilla-nss-tools

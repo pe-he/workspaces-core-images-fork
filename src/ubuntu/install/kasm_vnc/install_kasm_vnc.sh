@@ -7,7 +7,7 @@ prepare_rpm_repo_dependencies() {
   elif [[ "$DISTRO" = "oracle8" ]]; then
     dnf config-manager --set-enabled ol8_codeready_builder
     dnf install -y oracle-epel-release-el8
-  elif [[ "$DISTRO" = "oracle9" ]]; then
+  elif [[ "${DISTRO}" == @(oracle9|rhel9) ]]; then
     dnf config-manager --set-enabled ol9_codeready_builder
     dnf install -y oracle-epel-release-el9
   fi
@@ -45,7 +45,7 @@ elif [[ "${DISTRO}" == @(rockylinux8|oracle8|almalinux8) ]] ; then
     else
         BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_oracle_8_${KASM_VER_NAME_PART}_aarch64.rpm"
     fi
-elif [[ "${DISTRO}" == @(rockylinux9|oracle9|almalinux9) ]] ; then
+elif [[ "${DISTRO}" == @(rockylinux9|oracle9|rhel9|almalinux9) ]] ; then
     if [[ "$(arch)" =~ ^x86_64$ ]] ; then
         BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_oracle_9_${KASM_VER_NAME_PART}_x86_64.rpm"
     else
@@ -136,7 +136,7 @@ if [[ "${DISTRO}" == @(centos|oracle7) ]] ; then
     wget "${BUILD_URL}" -O kasmvncserver.rpm
     yum localinstall -y kasmvncserver.rpm
     rm kasmvncserver.rpm
-elif [[ "${DISTRO}" == @(oracle8|oracle9|rockylinux9|rockylinux8|almalinux8|almalinux9) ]] ; then
+elif [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9) ]] ; then
     wget "${BUILD_URL}" -O kasmvncserver.rpm
     dnf localinstall -y kasmvncserver.rpm
     dnf install -y mesa-dri-drivers
