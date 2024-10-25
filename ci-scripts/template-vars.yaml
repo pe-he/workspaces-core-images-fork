@@ -176,6 +176,23 @@ multiImages:
       - src/oracle9/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
       - src/oracle9/xfce/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/**
       - src/ubuntu/sysbox/**
+  - name1: rhel
+    name2: 9
+    base: registry.access.redhat.com/ubi9/ubi
+    bg: bg_rhel.png
+    distro: rhel9
+    dockerfile: dockerfile-kasm-core-oracle
+    changeFiles:
+      - dockerfile-kasm-core-oracle
+      - src/rhel9/**
+      - src/rhel9/xfce/**
+      - src/rhel9/xfce/.config/**
+      - src/rhel9/xfce/.config/xfce4/**
+      - src/rhel9/xfce/.config/xfce4/xfconf/**
+      - src/rhel9/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
+      - src/rhel9/xfce/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/**
+      - src/ubuntu/install/rhel/**
+      - src/ubuntu/sysbox/**
   - name1: rockylinux
     name2: 8
     base: rockylinux:8

@@ -58,6 +58,9 @@ handle_other_distros_conversion() {
     almalinux*)
       profile_distro=$(echo "$profile_distro" | sed -e 's/linux//')
       ;;
+    rhel*)
+      profile_distro=$(echo "$profile_distro" | sed -e 's/rhel/oracle/')
+      ;;
   esac
 }
 

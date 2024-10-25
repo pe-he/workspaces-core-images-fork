@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ### every exit != 0 fails the script
-set -e
+set -ex
 
 disable_epel_nss_wrapper_that_breaks_firefox() {
   yum-config-manager --setopt=epel.exclude=nss_wrapper --save
@@ -30,7 +30,7 @@ EOL
 }
 
 echo "Install Xfce4 UI components"
-if [[ "${DISTRO}" != @(centos|oracle7|oracle8|opensuse|fedora37|fedora38|fedora39|fedora40|oracle9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
+if [[ "${DISTRO}" != @(centos|oracle7|oracle8|opensuse|fedora37|fedora38|fedora39|fedora40|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
   apt-get update
 fi
 
@@ -111,7 +111,7 @@ elif [ "$DISTRO" = "oracle8" ]; then
     xclip \
     xfce4-notifyd \
     xset
-elif [ "$DISTRO" = "oracle9" ]; then
+elif [[ "${DISTRO}" == @(oracle9|rhel9) ]]; then
   dnf config-manager --set-enabled ol9_codeready_builder
   dnf config-manager --set-enabled ol9_distro_builder
   dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
@@ -214,7 +214,7 @@ Exec=/usr/lib/xfce4/notifyd/xfce4-notifyd
 EOL
 fi
 
-if [[ "${DISTRO}" != @(centos|oracle7|oracle8|fedora37|fedora38|fedora39|fedora40|oracle9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
+if [[ "${DISTRO}" != @(centos|oracle7|oracle8|fedora37|fedora38|fedora39|fedora40|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
   replace_default_xinit
   if [ "${START_XFCE4}" == "1" ] ; then
     replace_default_99x11_common_start

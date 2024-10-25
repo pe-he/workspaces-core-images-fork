@@ -11,12 +11,12 @@ set -ex
 
     if [ -f /etc/centos-release ]; then
         DISTRO=centos
-    elif [ -f /etc/oracle-release ] || [ -f /etc/rocky-release ] || [ -f /etc/almalinux-release ]; then
+    elif [ -f /etc/fedora-release ]; then
+        DISTRO=fedora
+    elif [ -f /etc/oracle-release ] || [ -f /etc/rocky-release ] || [ -f /etc/almalinux-release ] || [ -f /etc/redhat-release ]; then
         DISTRO=oracle7
     elif [ -f /usr/bin/zypper ]; then
         DISTRO=opensuse
-    elif [ -f /etc/fedora-release ]; then
-        DISTRO=fedora
     elif [ -f /etc/dpkg/origins/parrot ]; then
         DISTRO=parrotos6
     elif [ -f /etc/alpine-release ]; then
