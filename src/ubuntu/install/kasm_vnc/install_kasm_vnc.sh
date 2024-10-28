@@ -7,7 +7,7 @@ prepare_rpm_repo_dependencies() {
   elif [[ "$DISTRO" = "oracle8" ]]; then
     dnf config-manager --set-enabled ol8_codeready_builder
     dnf install -y oracle-epel-release-el8
-  elif [[ "${DISTRO}" == @(oracle9|rhel9) ]]; then
+  elif [[ "${DISTRO}" == "oracle9" ]]; then
     dnf config-manager --set-enabled ol9_codeready_builder
     dnf install -y oracle-epel-release-el9
   fi

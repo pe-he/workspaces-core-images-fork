@@ -9,29 +9,29 @@ fi
 
 # Add OL9 repos to RHEL
 cat >>/etc/yum.repos.d/oracle-linux-ol9.repo <<EOL
-[ol9_appstream]
-name=RHEL Application Stream Packages (\$basearch) 
+[el9_appstream]
+name=Enterprise Linux Application Stream Packages (\$basearch) 
 baseurl=https://yum.oracle.com/repo/OracleLinux/OL9/appstream/\$basearch/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
 gpgcheck=1
 enabled=1
 
-[ol9_codeready_builder]
-name=RHEL CodeReady Builder (\$basearch) - (Unsupported)
+[el9_codeready_builder]
+name=Enterprise Linux CodeReady Builder (\$basearch)
 baseurl=https://yum.oracle.com/repo/OracleLinux/OL9/codeready/builder/\$basearch/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
 gpgcheck=1
 enabled=1
 
-[ol9_baseos_latest]
-name=RHEL BaseOS Latest (\$basearch)  
+[el9_baseos_latest]
+name=Enterprise Linux BaseOS Latest (\$basearch)  
 baseurl=https://yum.oracle.com/repo/OracleLinux/OL9/baseos/latest/\$basearch/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
 gpgcheck=1
 enabled=1
 
-[ol9_distro_builder]
-name=RHEL Distro Builder (\$basearch) - (Unsupported)
+[el9_distro_builder]
+name=Enterprise Linux Distro Builder (\$basearch)
 baseurl=https://yum.oracle.com/repo/OracleLinux/OL9/distro/builder/\$basearch/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
 gpgcheck=1
@@ -145,3 +145,8 @@ RgwnCPfIai7lLNx95bdwB8U2NpY11OXsoTLZAA==
 =UWTf
 -----END PGP PUBLIC KEY BLOCK-----
 EOL
+
+# Disable subscription manager
+sed -i \
+  's/enabled=1/enabled=0/g' \
+  /etc/yum/pluginconf.d/subscription-manager.conf

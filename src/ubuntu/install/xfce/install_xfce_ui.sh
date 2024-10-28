@@ -112,8 +112,10 @@ elif [ "$DISTRO" = "oracle8" ]; then
     xfce4-notifyd \
     xset
 elif [[ "${DISTRO}" == @(oracle9|rhel9) ]]; then
-  dnf config-manager --set-enabled ol9_codeready_builder
-  dnf config-manager --set-enabled ol9_distro_builder
+  if [[ "${DISTRO}" == "oracle9" ]]; then
+    dnf config-manager --set-enabled ol9_codeready_builder
+    dnf config-manager --set-enabled ol9_distro_builder
+  fi
   dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
   dnf group install xfce -y -x oracle-backgrounds
   dnf install -y \
