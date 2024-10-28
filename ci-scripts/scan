@@ -3,7 +3,14 @@
 set -eo pipefail
 
 build_report() {
+  set +e
   $trivy_cmd --exit-code 0 --format template --template "@/$trivy_dir/contrib/junit.tpl" -o "$source_dir/trivy-report.xml" "$target"
+  RESULT=$?
+  set -e
+  if [ $RESULT -ne 0 ]; then
+    echo "Trivy command failed with default db, falling back to using ECR vuln db"
+    $trivy_cmd --db-repository public.ecr.aws/aquasecurity/trivy-db:2 --java-db-repository public.ecr.aws/aquasecurity/trivy-java-db:1 --exit-code 0 --format template --template "@/$trivy_dir/contrib/junit.tpl" -o "$source_dir/trivy-report.xml" "$target"
+  fi
   #$trivy_cmd --exit-code 0 --format json -o "$source_dir/report.json" "$target"
 }
 
