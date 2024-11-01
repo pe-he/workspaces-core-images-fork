@@ -8,7 +8,7 @@ elif [ "${DISTRO}" == "oracle8" ]; then
   DISTRO=oracle
 fi
 
-COMMIT_ID="23df7e27fe5c1536bd08da6bd58d65d1d7facb1b"
+COMMIT_ID="52259f86edcd2284c3b23d51a90e247791e16eff"
 BRANCH="develop"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
