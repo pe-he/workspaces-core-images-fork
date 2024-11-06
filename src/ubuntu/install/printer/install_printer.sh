@@ -23,7 +23,7 @@ fi
 # to the one watched by the printer service
 sed -i -r -e "s:^(Out\s).*:\1/home/kasm-user/PDF:" /etc/cups/cups-pdf.conf
 
-COMMIT_ID="30ca302fa364051fd4c68982da7c5474a7bda6b8"
+COMMIT_ID="7f560de30209f2fc9b59adb44430a80558c446ce"
 BRANCH="develop"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 

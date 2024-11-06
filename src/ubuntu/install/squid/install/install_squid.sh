@@ -103,7 +103,7 @@ sasldb_path: /etc/sasl2/memcached-sasldb2
 EOL
 
 
-COMMIT_ID="f8a1049969e7bde2fa0814eb3e5e09f4359efca1"
+COMMIT_ID="456fe95221c5e0cba5b10f2913a36cf85eaa3f23"
 BRANCH="develop"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
