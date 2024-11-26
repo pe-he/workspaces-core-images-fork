@@ -33,7 +33,11 @@ elif [ "${DISTRO}" == "alpine" ]; then
 else
   apt-get update
   # Update tzdata noninteractive (otherwise our script is hung on user input later).
-  DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
+  ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
+  DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
+  # Debian (KasmOS) requires a reconfigure because tzdata is already installed
+  # On Ubuntu, this is a no-op
+  dpkg-reconfigure --frontend noninteractive tzdata
 
   # software-properties is removed from kali-rolling
   if grep -q "kali-rolling" /etc/os-release; then
