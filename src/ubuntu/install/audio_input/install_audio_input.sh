@@ -2,10 +2,9 @@
 ### every exit != 0 fails the script
 set -e
 
-COMMIT_ID="10aac48a50c7b8a03fd94e2dc404ebb7e7ab9e24"
+COMMIT_ID="10efaf2e06feb2c1e3f7ee05978bbb9f0142c01b"
 BRANCH="develop"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
-
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 
 mkdir -p $STARTUPDIR/audio_input
