@@ -266,6 +266,25 @@ function start_audio_out (){
 	fi
 }
 
+function start_pcm_audio (){
+        if [[ ${KASM_SVC_AUDIO:-1} == 1 ]]; then
+                log 'Starting audio out'
+            if [ "${START_PULSEAUDIO:-0}" == "1" ] ;
+            then
+                echo "Starting Pulse"
+                HOME=/var/run/pulse pulseaudio --start
+            fi
+                /opt/audio/start kasmaudio 4901 ${HOME}/.vnc/self.pem ${HOME}/.vnc/self.pem "kasm_user:$VNC_PW" &
+  
+                KASM_PROCS['kasm_audio_server']=$!
+                
+                if [[ $DEBUG == true ]]; then
+                  echo -e "\n------------------ Started Audio Server  ----------------------------"
+                  echo "Kasm Audio Server PID: ${KASM_PROCS['kasm_audio_server']}";
+                fi
+        fi      
+}
+
 function start_audio_in (){
 	if [[ ${KASM_SVC_AUDIO_INPUT:-1} == 1 ]]; then
 		log 'Starting audio input server'
@@ -523,8 +542,12 @@ chmod 600 $PASSWD_PATH
 wait_on_printer
 start_kasmvnc
 start_window_manager
-start_audio_out_websocket
-start_audio_out
+if [ -z ${PCM_AUDIO+x} ]; then
+    start_audio_out_websocket
+    start_audio_out
+else
+    start_pcm_audio
+fi
 start_audio_in
 start_upload
 start_gamepad
@@ -590,7 +613,11 @@ do
 					echo "Restarting Audio Out Service"
 					start_audio_out
 					;;
-				kasm_audio_in)
+                                kasm_audio_server)
+                                        echo "Restarting Audio Server"
+                                        start_pcm_audio
+                                        ;;
+			 	kasm_audio_in)
 					echo "Audio In Service Failed"
 					# TODO: Needs work in python project to support auto restart
 					# start_audio_in
@@ -600,7 +627,7 @@ do
 					# TODO: This will only work if both processes are killed, requires more work
 					start_upload
 					;;
-                kasm_gamepad)
+				kasm_gamepad)
 					echo "Gamepad Service Failed"
 					# TODO: Needs work in python project to support auto restart
 					# start_gamepad

@@ -11,7 +11,6 @@ elif [ "${DISTRO}" == "opensuse" ]; then
 elif [[ "${DISTRO}" == @(debian|kali|parrotos6|ubuntu) ]]; then
   # Uninstall unneccesary/vulnerable packages
   dpkg --purge ipp-usb #KASM-5266
-
   apt-get autoremove -y
   apt-get autoclean -y
 fi
