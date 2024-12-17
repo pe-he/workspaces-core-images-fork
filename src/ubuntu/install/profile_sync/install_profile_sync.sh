@@ -51,6 +51,9 @@ handle_other_distros_conversion() {
       if grep -q 'v3.20' /etc/os-release; then
         profile_distro="alpine_320"
       fi
+      if grep -q 'v3.21' /etc/os-release; then
+        profile_distro="alpine_321"
+      fi
       ;;
     rockylinux*)
       profile_distro=$(echo "$profile_distro" | sed -e 's/linux//')
@@ -86,7 +89,7 @@ download_and_symlink() {
 
 ARCH=$(arch)
 BRANCH="develop"
-COMMIT_ID="42424ea385a0d10fa7bb5749e207ee70b2a44ae2"
+COMMIT_ID="9b62027aaf2046454b572d7257070aaac9cd8cac"
 
 convert_local_distro_to_profile_sync_distro
 check_distro_is_supported
