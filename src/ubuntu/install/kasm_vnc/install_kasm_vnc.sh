@@ -17,9 +17,9 @@ echo "Install KasmVNC server"
 cd /tmp
 BUILD_ARCH=$(uname -p)
 UBUNTU_CODENAME=""
-COMMIT_ID="0ebbbc6412e131092308cc1ce10b9d106e3b4e05"
-BRANCH="release" # just use 'release' for a release branch
-KASMVNC_VER="1.3.3"
+COMMIT_ID="e04731870baebd2784983fb48197a2416c7d3519"
+BRANCH="master" # just use 'release' for a release branch
+KASMVNC_VER="1.3.4"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
 # Naming scheme is now different between an official release and feature branch
@@ -96,7 +96,13 @@ elif [[ "${DISTRO}" = @(debian|parrotos6) ]] ; then
         fi
     fi
 elif [[ "${DISTRO}" == "alpine" ]] ; then
-    if grep -q v3.20 /etc/os-release; then
+    if grep -q v3.21 /etc/os-release; then
+        if [[ "$(arch)" =~ ^x86_64$ ]] ; then
+            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_321/kasmvnc.alpine_321_x86_64.tgz"
+        else
+            BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_321/kasmvnc.alpine_321_aarch64.tgz"
+        fi
+    elif grep -q v3.20 /etc/os-release; then
         if [[ "$(arch)" =~ ^x86_64$ ]] ; then
             BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/output/alpine_320/kasmvnc.alpine_320_x86_64.tgz"
         else
