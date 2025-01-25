@@ -22,7 +22,7 @@ elif [[ "${DISTRO}" == @(oracle9|rhel9) ]]; then
   fi
   dnf localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm
   dnf install -y --allowerasing ffmpeg pulseaudio-utils pulseaudio
-elif [[ "${DISTRO}" == @(rockylinux9|almalinux9) ]]; then 
+elif [[ "${DISTRO}" == @(rockylinux9|almalinux9) ]]; then
   dnf localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm
   dnf install -y --allowerasing ffmpeg pulseaudio-utils pulseaudio
 elif [[ "${DISTRO}" == @(rockylinux8|almalinux8) ]]; then
@@ -44,8 +44,12 @@ elif [ "${DISTRO}" == "fedora40" ]; then
   dnf install -y curl git
   dnf localinstall -y --nogpgcheck https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-40.noarch.rpm
   dnf install -y --allowerasing ffmpeg pulseaudio pulseaudio-utils
+elif [ "${DISTRO}" == "fedora41" ]; then
+  dnf install -y curl git
+  dnf-3 localinstall -y --nogpgcheck https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-41.noarch.rpm
+  dnf install -y --allowerasing ffmpeg pulseaudio pulseaudio-utils
 elif [ "${DISTRO}" == "opensuse" ]; then
-  zypper install -ny curl git 
+  zypper install -ny curl git
   zypper install -yn ffmpeg pulseaudio-utils
 elif [ "${DISTRO}" == "alpine" ]; then
   if grep -q v3.19 /etc/os-release || grep -q v3.20 /etc/os-release || grep -q v3.21 /etc/os-release; then
@@ -60,7 +64,7 @@ elif [ "${DISTRO}" == "alpine" ]; then
       ffmpeg \
       git \
       pulseaudio \
-      pulseaudio-utils 
+      pulseaudio-utils
   fi
 else
   apt-get update

@@ -88,8 +88,8 @@ download_and_symlink() {
 }
 
 ARCH=$(arch)
-BRANCH="develop"
-COMMIT_ID="9b62027aaf2046454b572d7257070aaac9cd8cac"
+BRANCH="feature_KASM-6852-fedora-41"
+COMMIT_ID="6bf95129c750a2453e65596020df2e593d58d06c"
 
 convert_local_distro_to_profile_sync_distro
 check_distro_is_supported

@@ -17,8 +17,8 @@ echo "Install KasmVNC server"
 cd /tmp
 BUILD_ARCH=$(uname -p)
 UBUNTU_CODENAME=""
-COMMIT_ID="e04731870baebd2784983fb48197a2416c7d3519"
-BRANCH="master" # just use 'release' for a release branch
+COMMIT_ID="e8f1787dc208909ea6756a70c821997351b537af"
+BRANCH="feature_KASM-6852-fedora-41" # just use 'release' for a release branch
 KASMVNC_VER="1.3.4"
 COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
 
@@ -80,6 +80,12 @@ elif [[ "${DISTRO}" == "fedora40" ]] ; then
         BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_forty_${KASM_VER_NAME_PART}_x86_64.rpm"
     else
         BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_forty_${KASM_VER_NAME_PART}_aarch64.rpm"
+    fi
+elif [[ "${DISTRO}" == "fedora41" ]] ; then
+    if [[ "$(arch)" =~ ^x86_64$ ]] ; then
+        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_fortyone_${KASM_VER_NAME_PART}_x86_64.rpm"
+    else
+        BUILD_URL="https://kasmweb-build-artifacts.s3.amazonaws.com/kasmvnc/${COMMIT_ID}/kasmvncserver_fedora_fortyone_${KASM_VER_NAME_PART}_aarch64.rpm"
     fi
 elif [[ "${DISTRO}" = @(debian|parrotos6) ]] ; then
     if $(grep -q bookworm /etc/os-release) || $(grep -q lory /etc/os-release); then
@@ -147,13 +153,19 @@ elif [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|rockylinux9|rockylinux8|almalinux
     dnf localinstall -y kasmvncserver.rpm
     dnf install -y mesa-dri-drivers
     rm kasmvncserver.rpm
-elif [[ "${DISTRO}" == @(fedora37|fedora38|fedora39|fedora40) ]] ; then
+elif [[ "${DISTRO}" == @(fedora37|fedora38|fedora39|fedora40|fedora41) ]] ; then
     dnf install -y xorg-x11-drv-amdgpu xorg-x11-drv-ati
     if [ "${BUILD_ARCH}" == "x86_64" ]; then
         dnf install -y xorg-x11-drv-intel
     fi
     wget "${BUILD_URL}" -O kasmvncserver.rpm
-    dnf localinstall -y --allowerasing kasmvncserver.rpm
+    if [[ "${DISTRO}" == "fedora41" ]] ; then
+        dnf-3 localinstall -y --allowerasing kasmvncserver.rpm
+        dnf install -y update-crypto-policies
+        update-crypto-policies --set FEDORA40
+    else
+        dnf localinstall -y --allowerasing kasmvncserver.rpm
+    fi
     dnf install -y mesa-dri-drivers
     rm kasmvncserver.rpm
 elif [[ "${DISTRO}" == "opensuse" ]] ; then

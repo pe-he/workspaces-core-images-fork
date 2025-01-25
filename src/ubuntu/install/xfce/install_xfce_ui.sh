@@ -30,7 +30,7 @@ EOL
 }
 
 echo "Install Xfce4 UI components"
-if [[ "${DISTRO}" != @(centos|oracle7|oracle8|opensuse|fedora37|fedora38|fedora39|fedora40|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
+if [[ "${DISTRO}" != @(centos|oracle7|oracle8|opensuse|fedora37|fedora38|fedora39|fedora40|fedora41|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
   apt-get update
 fi
 
@@ -92,7 +92,7 @@ elif [[ "${DISTRO}" == @(centos|oracle7) ]]; then
   if [ "${DISTRO}" == centos ]; then
     yum install -y epel-release
   else
-    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm  
+    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   fi
   disable_epel_nss_wrapper_that_breaks_firefox
   yum groupinstall xfce -y
@@ -174,14 +174,29 @@ elif [ "$DISTRO" = "opensuse" ]; then
     xset
   # Pidof is no longer shipped in OpenSuse
   ln -s /usr/bin/pgrep /usr/bin/pidof
-elif [[ "$DISTRO" = @(fedora37|fedora38|fedora39|fedora40) ]]; then
-  dnf group install xfce -y
+elif [[ "$DISTRO" = @(fedora37|fedora38|fedora39|fedora40|fedora41) ]]; then
   dnf install -y \
-    gvfs \
-    wmctrl \
-    xclip \
-    xfce4-notifyd \
-    xset
+    dbus-tools \
+    dbus-x11 \
+    desktop-backgrounds-compat \
+    dex-autostart \
+    greybird-dark-theme \
+    greybird-xfwm4-theme \
+    gtk-xfce-engine \
+    mousepad \
+    Thunar \
+    xfce4-appfinder \
+    xfce4-datetime-plugin \
+    xfce4-panel \
+    xfce4-places-plugin \
+    xfce4-pulseaudio-plugin \
+    xfce4-session \
+    xfce4-settings \
+    xfce4-terminal \
+    xfconf \
+    xfdesktop \
+    xfwm4 \
+    xfwm4-themes
 
   # fix for xfce4-notifyd not being rachable
   dbus-uuidgen --ensure
@@ -216,7 +231,7 @@ Exec=/usr/lib/xfce4/notifyd/xfce4-notifyd
 EOL
 fi
 
-if [[ "${DISTRO}" != @(centos|oracle7|oracle8|fedora37|fedora38|fedora39|fedora40|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
+if [[ "${DISTRO}" != @(centos|oracle7|oracle8|fedora37|fedora38|fedora39|fedora40|fedora41|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9|alpine) ]]; then
   replace_default_xinit
   if [ "${START_XFCE4}" == "1" ] ; then
     replace_default_99x11_common_start
