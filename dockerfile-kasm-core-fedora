@@ -45,7 +45,12 @@ RUN mkdir -p $HOME/Desktop
 ### (should be nss_wrapper), and yum would just ignore it. Thus, a necessary
 ### package would be missing. With skip_missing_names_on_install, yum will exit
 ### with 1 exit code and that will stop image building.
-RUN dnf install -y 'dnf-command(config-manager)' && dnf config-manager --setopt=skip_missing_names_on_install=False --save
+RUN dnf install -y 'dnf-command(config-manager)' && \
+		if [ "${DISTRO}" == "fedora41" ]; then \
+				dnf-3 config-manager --setopt=skip_missing_names_on_install=False --save; \
+		else \
+				dnf config-manager --setopt=skip_missing_names_on_install=False --save; \
+		fi
 
 ### Install custom fonts
 COPY ./src/ubuntu/install/fonts $INST_SCRIPTS/fonts/

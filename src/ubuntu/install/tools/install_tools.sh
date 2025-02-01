@@ -8,7 +8,7 @@ fi
 echo "Install some common tools for further installation"
 if [[ "${DISTRO}" == @(centos|oracle7) ]] ; then
   yum install -y vim wget net-tools bzip2 ca-certificates bc
-elif [[ "${DISTRO}" == @(fedora37|fedora38|fedora39|fedora40|oracle8|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9) ]]; then
+elif [[ "${DISTRO}" == @(fedora37|fedora38|fedora39|fedora40|fedora41|oracle8|oracle9|rhel9|rockylinux9|rockylinux8|almalinux8|almalinux9) ]]; then
   dnf install -y wget net-tools bzip2 tar vim hostname procps-ng bc
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn wget net-tools bzip2 tar vim gzip iputils bc

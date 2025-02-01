@@ -296,6 +296,20 @@ multiImages:
       - src/fedora40/xfce/.config/xfce4/**
       - src/fedora40/xfce/.config/xfce4/xfconf/**
       - src/fedora40/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
+  - name1: fedora
+    name2: 41
+    base: fedora:41
+    bg: bg_fedora.png
+    distro: fedora41
+    dockerfile: dockerfile-kasm-core-fedora
+    changeFiles:
+      - dockerfile-kasm-core-fedora
+      - src/fedora41/**
+      - src/fedora41/xfce/**
+      - src/fedora41/xfce/.config/**
+      - src/fedora41/xfce/.config/xfce4/**
+      - src/fedora41/xfce/.config/xfce4/xfconf/**
+      - src/fedora41/xfce/.config/xfce4/xfconf/xfce-perchannel-xml/**
   - name1: parrotos
     name2: 6
     base: parrotsec/core:6
