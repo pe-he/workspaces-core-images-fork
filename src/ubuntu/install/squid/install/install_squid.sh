@@ -1,37 +1,32 @@
 #!/bin/bash
 set -ex
 
+# Install openssl
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
-
-# intall squid
-SQUID_COMMIT='de1dffbc94d4132d6c696de8c6dfcd6f08900f61'
-SQUID_DISTRO=${DISTRO}
-# currently all distros use the ubuntu build of squid except centos/oracle
-if [[ "${SQUID_DISTRO}" != @(centos|oracle7) ]] ; then
-  SQUID_DISTRO="ubuntu"
-fi
-if [ "${DISTRO}" == "oracle7" ]; then
-  SQUID_DISTRO=centos
-  DISTRO=centos
-elif [ "${DISTRO}" == "oracle8" ]; then
-  SQUID_DISTRO=oracle8
-  DISTRO=oracle
+if [[ "${DISTRO}" == @(centos|oracle7|oracle8|oracle9|rhel9|fedora37|fedora38|fedora39|fedora40|fedora41|almalinux8|almalinux9|rockylinux8|rockylinux9) ]]; then
+  dnf install -y openssl xkbcomp
+  rm -f /etc/X11/xinit/xinitrc
+elif [[ "${DISTRO}" == "alpine" ]]; then
+  apk add --no-cache openssl
 elif [ "${DISTRO}" == "opensuse" ]; then
-  SQUID_DISTRO=opensuse
-fi
-if  $(grep -q Jammy /etc/os-release) || $(grep -q Kali /etc/os-release) ; then
+  zypper install -yn openssl
+else
   apt-get update
-  apt-get install -y squid-openssl
-  mkdir -p /usr/local/squid/sbin
-  mkdir -p /usr/local/squid/var/logs/
-  ln -s /usr/lib/squid/ /usr/local/squid/libexec
-  ln -s /usr/sbin/squid /usr/local/squid/sbin/squid
-elif [[ "${SQUID_DISTRO}" != @(centos|oracle7|oracle8|opensuse) ]] ; then
-  wget -qO- "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm-squid-builder/${SQUID_COMMIT}/output/kasm-squid-builder_${SQUID_DISTRO}_${ARCH}.tar.gz" | tar -xzf - -C /
+  apt-get install -y openssl
 fi
 
-# update squid conf with user info
-if [[ "${DISTRO}" == @(centos|oracle) ]]; then
+# Intall squid
+SQUID_COMMIT='c45537169794a16029e06d7d456edb21b9ce7d12'
+if $(grep -q Focal /etc/os-release) || $(grep -q bullseye /etc/os-release) || [ -f /usr/bin/zypper ] || [[ "${DISTRO}" == @(oracle8|almalinux8|rockylinux8) ]]; then
+  wget -qO- https://kasmweb-build-artifacts.s3.amazonaws.com/kasm-squid-builder/${SQUID_COMMIT}/output/kasm-squid-builder_ubuntu11_${ARCH}.tar.gz | tar -xzf - -C /
+elif [[ "${DISTRO}" == "alpine" ]]; then
+  wget -qO- https://kasmweb-build-artifacts.s3.amazonaws.com/kasm-squid-builder/${SQUID_COMMIT}/output/kasm-squid-builder_alpine_${ARCH}.tar.gz | tar -xzf - -C /
+else
+  wget -qO- https://kasmweb-build-artifacts.s3.amazonaws.com/kasm-squid-builder/${SQUID_COMMIT}/output/kasm-squid-builder_ubuntu_${ARCH}.tar.gz | tar -xzf - -C /
+fi
+
+# Update squid conf with user info
+if [[ "${DISTRO}" == @(centos|oracle7|oracle8|oracle9|rhel9|fedora37|fedora38|fedora39|fedora40|fedora41|almalinux8|almalinux9|rockylinux8|rockylinux9|alpine) ]]; then
   useradd --system --shell /usr/sbin/nologin --home-dir /bin proxy
 elif [ "${DISTRO}" == "opensuse" ]; then
   useradd --system --shell /usr/sbin/nologin --home-dir /bin proxy
@@ -39,16 +34,14 @@ elif [ "${DISTRO}" == "opensuse" ]; then
   usermod -a -G proxy proxy
 fi
 
+# File and perms
 mkdir /usr/local/squid/etc/ssl_cert -p
 chown proxy:proxy /usr/local/squid/etc/ssl_cert -R
 chmod 700 /usr/local/squid/etc/ssl_cert -R
 cd /usr/local/squid/etc/ssl_cert
-
 /usr/local/squid/libexec/security_file_certgen -c -s /usr/local/squid/var/logs/ssl_db -M 4MB
 chown proxy:proxy /usr/local/squid/var/logs/ssl_db -R
-
 chown -R proxy:proxy /usr/local/squid -R
-
 mkdir -p /etc/squid/
 
 # Trick so we can auto re-direct blocked urls to a special page
@@ -58,14 +51,16 @@ EOL
 chown -R proxy:proxy /etc/squid/blocked.acl
 
 
-if [[ "${DISTRO}" == "centos" ]]; then
+if [[ "${DISTRO}" == @(centos|oracle7) ]]; then
   yum install -y memcached cyrus-sasl iproute
-elif [ "${DISTRO}" == "oracle" ]; then
+elif [[ "${DISTRO}" == @(oracle8|fedora37|fedora38|fedora39|fedora40|fedora41|oracle9|rhel9|rockylinux9|rockylinux8|almalinux9|almalinux8) ]]; then
   dnf install -y memcached cyrus-sasl iproute
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn memcached cyrus-sasl iproute2 libatomic1
+elif [[ "${DISTRO}" == "alpine" ]]; then
+  apk add --no-cache memcached cyrus-sasl iproute2 libatomic
 else
-  apt-get install -y memcached sasl2-bin iproute2
+  apt-get install -y memcached sasl2-bin libsasl2-modules iproute2
 fi
 
 # Enable SASL in the memchache config
@@ -78,25 +73,33 @@ log_level: 5
 sasldb_path: /etc/sasl2/memcached-sasldb2
 EOL
 
-KASM_SQUID_ADAPTER=https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_squid_adapter/d54ebc03a8696964b12cb99e5863116fb3a26c0b/kasm_squid_adapter_${DISTRO/kali/ubuntu}_${ARCH}_develop.d54ebc.tar.gz
 
-wget -qO- ${KASM_SQUID_ADAPTER} | tar xz -C /etc/squid/
+COMMIT_ID="456fe95221c5e0cba5b10f2913a36cf85eaa3f23"
+BRANCH="develop"
+COMMIT_ID_SHORT=$(echo "${COMMIT_ID}" | cut -c1-6)
+
+
+if [[ "${DISTRO}" == "alpine" ]]; then
+  wget -qO- https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_squid_adapter/${COMMIT_ID}/kasm_squid_adapter_alpine_${ARCH}_${BRANCH}.${COMMIT_ID_SHORT}.tar.gz | tar xz -C /etc/squid/
+else
+  wget -qO- https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_squid_adapter/${COMMIT_ID}/kasm_squid_adapter_glibc_${ARCH}_${BRANCH}.${COMMIT_ID_SHORT}.tar.gz | tar xz -C /etc/squid/
+fi
+echo "${BRANCH}:${COMMIT_ID}" > /etc/squid/kasm_squid_adapter.version
 ls -la /etc/squid
 chmod +x /etc/squid/kasm_squid_adapter
 
 # FIXME - This likely should be moved somewhere else to be more explicit
 # Install Cert utilities
-if [[ "${DISTRO}" == "centos" ]]; then
+if [[ "${DISTRO}" == @(centos|oracle7) ]]; then
   yum install -y nss-tools
-elif [ "${DISTRO}" == "oracle" ]; then
+elif [[ "${DISTRO}" == @(oracle8|fedora37|fedora38|fedora39|fedora40|fedora41|oracle9|rhel9|rockylinux9|rockylinux8|almalinux9|almalinux8) ]]; then
   dnf install -y nss-tools
-  dnf clean all
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn mozilla-nss-tools
-  zypper clean --all
+elif [ "${DISTRO}" == "alpine" ]; then
+  apk add --no-cache nss-tools
 else
   apt-get install -y libnss3-tools
-  apt-get clean -y
 fi
 
 # Create an empty cert9.db. This will be used by applications like Chrome
